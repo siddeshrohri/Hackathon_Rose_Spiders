@@ -19,7 +19,6 @@ tokenizer = AutoTokenizer.from_pretrained(semantic_model_name)
 semantic_model = AutoModelForSequenceClassification.from_pretrained(semantic_model_name, num_labels=3)
 
 # Define microaggression categories and their associated keywords
-# Define microaggression categories and their associated keywords
 MICROAGGRESSION_CATEGORIES = {
     'racism': [
         'ethnic', 'racial', 'culture', 'minority', 'foreign', 'immigrant', 'accent',
@@ -27,12 +26,15 @@ MICROAGGRESSION_CATEGORIES = {
         'exotic', 'ghetto', 'thug', 'articulate', 'civilized'
     ],
     'sexism': [
+        # Female-related terms
         'woman', 'girl', 'female', 'lady', 'mother', 'emotional', 'hormonal',
         'hysteric', 'feminine', 'secretary', 'nurse', 'bossy',
+        # Male-related terms
         'man', 'boy', 'male', 'gentleman', 'father', 'aggressive', 'masculine',
-        'macho', 'sissy', 'wimp', 'tough', 'breadwinner',
-        'gender', 'sex', 'transgender', 'identity', 'pronouns', 'biology',
-        'natural', 'normal', 'traditional', 'role', 'place', 'job'
+        'macho', 'tough', 'sissy', 'weak', 'provider', 'breadwinner',
+        # General gender terms
+        'gender', 'sex', 'transgender', 'identity', 'role', 'stereotype',
+        'patriarchy', 'feminism', 'toxic', 'equality'
     ],
     'ageism': [
         'old', 'young', 'boomer', 'millennial', 'senior', 'elderly', 'kid',
@@ -52,6 +54,19 @@ MICROAGGRESSION_CATEGORIES = {
     ]
 }
 
+# Define severity thresholds
+SEVERITY_THRESHOLDS = {
+    'no_microaggression': {
+        'toxic_score': 0.3,
+        'negative_score': 0.4
+    },
+    'moderate': {
+        'toxic_score': 0.6,
+        'negative_score': 0.7
+    }
+    # Anything above these thresholds is considered peak toxicity
+}
+
 def preprocess_text(text):
     """Process text to extract meaningful words."""
     doc = nlp(text.lower())
@@ -68,7 +83,6 @@ def identify_categories(text):
     for category, keywords in MICROAGGRESSION_CATEGORIES.items():
         matches = tokens.intersection(set(keywords))
         if matches:
-            # Calculate a confidence score based on number of matching keywords
             confidence = len(matches) / len(tokens)
             if confidence > 0.1:
                 categories[category] = {
@@ -119,6 +133,17 @@ def semantic_analysis(text):
     probabilities = torch.nn.functional.softmax(outputs.logits, dim=-1)
     return probabilities[0].tolist()
 
+def determine_severity(toxic_score, negative_score):
+    """Determine the severity level of the microaggression."""
+    if toxic_score <= SEVERITY_THRESHOLDS['no_microaggression']['toxic_score'] and \
+       negative_score <= SEVERITY_THRESHOLDS['no_microaggression']['negative_score']:
+        return "no_microaggression"
+    elif toxic_score <= SEVERITY_THRESHOLDS['moderate']['toxic_score'] and \
+         negative_score <= SEVERITY_THRESHOLDS['moderate']['negative_score']:
+        return "moderate"
+    else:
+        return "peak_toxicity"
+
 def detect_microaggression(text):
     """Detect microaggression and return detailed analysis."""
     # Get predictions from toxicity classifier
@@ -135,26 +160,26 @@ def detect_microaggression(text):
     positive_score = semantic_scores[1]
     negative_score = semantic_scores[2]
     
-    # Initialize results
+    # Determine severity
+    severity = determine_severity(toxic_score if toxic_score else 0, negative_score)
+    
     results = {
         'toxic_score': toxic_score if toxic_score else 0,
         'negative_score': negative_score,
-        'is_microaggression': False,
-        'reason': '',
-        'categories': {}  # Initialize empty categories
+        'severity': severity,
+        'categories': {},
+        'reason': ''
     }
     
-    # Only identify categories if toxicity or strong negative sentiment is detected
-    if (toxic_score and toxic_score > 0.5) or negative_score > 0.7:
-        results['is_microaggression'] = True
-        results['categories'] = identify_categories(text)
-        
-        if toxic_score and toxic_score > 0.5:
-            results['reason'] = "Microaggression detected due to toxicity!"
-        else:
-            results['reason'] = "Microaggression detected due to strong negative semantics!"
-    else:
+    # Set reason and identify categories based on severity
+    if severity == "no_microaggression":
         results['reason'] = "No microaggression detected."
+    elif severity == "moderate":
+        results['reason'] = "Moderate microaggression detected!"
+        results['categories'] = identify_categories(text)
+    else:  # peak_toxicity
+        results['reason'] = "⚠️  Peak toxicity detected! Strong microaggression present!"
+        results['categories'] = identify_categories(text)
     
     # Get word contributions and generate word cloud
     word_scores = get_token_contributions(text, results)
@@ -163,8 +188,13 @@ def detect_microaggression(text):
     return results
 
 def main():
-    print("Enhanced Microaggression Detection System with Word Cloud Visualization")
-    print("------------------------------------------------------------------")
+    print("Enhanced Microaggression Detection System with Three-Level Classification")
+    print("----------------------------------------------------------------------")
+    print("\nSeverity Levels:")
+    print("1. No Microaggression: Safe content")
+    print("2. Moderate: Potentially problematic content")
+    print("3. Peak Toxicity: Highly problematic content")
+    
     while True:
         user_input = input("\nEnter a sentence to analyze (or type 'exit' to stop): ")
         if user_input.lower() == 'exit':
@@ -172,19 +202,18 @@ def main():
         
         results = detect_microaggression(user_input)
         print(f"\nAnalysis Results:")
+        print(f"- Severity: {results['severity'].replace('_', ' ').title()}")
         print(f"- {results['reason']}")
         print(f"- Toxicity Score: {results['toxic_score']:.3f}")
         print(f"- Negative Sentiment Score: {results['negative_score']:.3f}")
         
-        # Only display categories if microaggression is detected
-        if results['is_microaggression'] and results['categories']:
+        # Only display categories for moderate and peak toxicity
+        if results['severity'] != "no_microaggression" and results['categories']:
             print("\nDetected Categories:")
             for category, details in results['categories'].items():
                 print(f"- {category.title()}:")
                 print(f"  Confidence: {details['confidence']:.2f}")
                 print(f"  Matching terms: {', '.join(details['matching_terms'])}")
-        elif results['is_microaggression'] and not results['categories']:
-            print("\nNo specific category identified, but content is potentially harmful.")
 
 if __name__ == "__main__":
     main()
