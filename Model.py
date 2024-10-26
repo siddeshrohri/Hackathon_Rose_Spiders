@@ -19,6 +19,7 @@ tokenizer = AutoTokenizer.from_pretrained(semantic_model_name)
 semantic_model = AutoModelForSequenceClassification.from_pretrained(semantic_model_name, num_labels=3)
 
 # Define microaggression categories and their associated keywords
+# Define microaggression categories and their associated keywords
 MICROAGGRESSION_CATEGORIES = {
     'racism': [
         'ethnic', 'racial', 'culture', 'minority', 'foreign', 'immigrant', 'accent',
@@ -27,8 +28,11 @@ MICROAGGRESSION_CATEGORIES = {
     ],
     'sexism': [
         'woman', 'girl', 'female', 'lady', 'mother', 'emotional', 'hormonal',
-        'hysteric', 'boss lady', 'masculine', 'feminine', 'gender', 'secretary',
-        'nurse', 'bossy', 'aggressive'
+        'hysteric', 'feminine', 'secretary', 'nurse', 'bossy',
+        'man', 'boy', 'male', 'gentleman', 'father', 'aggressive', 'masculine',
+        'macho', 'sissy', 'wimp', 'tough', 'breadwinner',
+        'gender', 'sex', 'transgender', 'identity', 'pronouns', 'biology',
+        'natural', 'normal', 'traditional', 'role', 'place', 'job'
     ],
     'ageism': [
         'old', 'young', 'boomer', 'millennial', 'senior', 'elderly', 'kid',
