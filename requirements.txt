@@ -1,0 +1,7 @@
+torch>=1.7.0
+transformers>=4.0.0
+wordcloud>=1.8.1
+matplotlib>=3.3.0
+numpy>=1.18.0
+spacy>=3.0.0
+en-core-web-sm==3.0.0
