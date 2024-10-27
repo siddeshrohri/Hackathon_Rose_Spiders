@@ -1,0 +1,177 @@
+/* email.css */
+
+/* Page Layout */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f4f6f8 ; 
+}
+.email-page {
+    display: flex;
+    flex-direction: column;
+    /* height: 100vh; */
+    height: 100%;
+    width: auto;
+    background-color: #f4f6f8 ; 
+    /* overflow: hidden; */
+    outline : none;
+  }
+  
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #2c3e50 ;
+    border-radius : 15px;
+    overflow: hidden;
+    color: #333333 (79, 41, 41);
+  }
+  
+  
+  .menu-icon, .profile-icon {
+    font-size: 24px;
+    cursor: pointer;
+  }
+  /* Styling for the Search Bar */
+.search-bar {
+    flex: 1; 
+    margin: 0 15px; 
+    padding: 8px 12px; 
+    border: 1px solid #333333; 
+    border-radius: 12px; 
+    font-size: 16px; 
+    background-color: #f4f4f4; 
+}
+
+/* Optional: Add hover and focus effects for better user experience */
+.search-bar:hover {
+    background-color: #d8e3f2 ; 
+}
+
+.search-bar:focus {
+    outline: none; /* Removes default outline */
+    border: 1px solid #333333; /* Highlight border on focus */
+}
+
+  
+  /* Sidebar */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 180px;
+    height: 100%;
+    background-color: #c9d4e0   ;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+
+  }
+  
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  
+  .sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #333333;
+
+  }
+  
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .sidebar li {
+    padding: 10px 15px;
+    cursor: pointer;
+  }
+  
+  .sidebar li:hover {
+    background-color: #b0bdcd; 
+    color: #0e1d27; /* Darker text on hover */
+
+  }
+  
+  /* Email List */
+  .email-list {
+    align-content: center;
+    /* flex: 1; */
+    padding: 20px;
+    background-color: #2c3e50;
+    margin-top: 3%;
+    border-radius : 15px;
+    overflow: hidden;
+    
+  }
+  .email-list h2 {
+    font-size: 6vh;
+    margin : 5px;
+  }
+  .email-item {
+    display: flex;
+    justify-content: space-between;
+    /* padding: 10px; */
+    background-color: #c9d4e0;
+    margin-bottom: 10px;
+    border-radius: 15px;
+    overflow: hidden;
+  }
+  
+  .email-item:hover {
+    background-color: #b0bdcd; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow on hover */
+  }
+  /* Email Preview */
+  .email-preview {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 300px;
+    background-color: #c9d4e0;
+    margin-left : 2%;
+    height: inherit;
+    transition: right 0.3s ease;
+    z-index: 1000;
+  }
+  
+  .email-preview.open {
+    right: 0;
+  }
+  
+  .preview-header {
+    display: flex;
+    align-items: center; 
+    gap: 10px;
+    justify-content: flex-start;
+    align-items: center;
+    color: #333333;
+  }
+  
+  .preview-options p {
+    padding: 10px 15px;
+    
+    cursor: pointer;
+  }
+  
+  /* Close Icon */
+  .close-icon {
+    font-size: 20px;
+    margin-right: 0;
+    cursor: pointer;
+  }
+  
