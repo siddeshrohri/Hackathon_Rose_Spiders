@@ -36,6 +36,7 @@ body {
     color: #333333 (79, 41, 41);
   }
   
+  
   .menu-icon, .profile-icon {
     font-size: 24px;
     cursor: pointer;
@@ -117,14 +118,18 @@ body {
     overflow: hidden;
     
   }
-  
+  .email-list h2 {
+    font-size: 6vh;
+    margin : 5px;
+  }
   .email-item {
     display: flex;
     justify-content: space-between;
     /* padding: 10px; */
     background-color: #c9d4e0;
     margin-bottom: 10px;
-    border-radius: 5px;
+    border-radius: 15px;
+    overflow: hidden;
   }
   
   .email-item:hover {

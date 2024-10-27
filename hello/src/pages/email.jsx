@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import './email.css'; // Ensure correct path to CSS file
 import { FaBars, FaUserCircle, FaTimes } from 'react-icons/fa';
+import EmailDropdown from './emaildropdown'; // Import the EmailDropdown component
 
 const EmailPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -54,17 +55,15 @@ const EmailPage = () => {
         <ul>
           {emails.map((email) => (
             <li key={email.id} className="email-item">
-              <div className="email-sender">{email.sender}</div>
-              <div className="email-subject">{email.subject}</div>
-              <div className="email-time">{email.time}</div>
+              <EmailDropdown email={email} /> {/* Use EmailDropdown for each email */}
             </li>
           ))}
         </ul>
       </main>
-
       {/* Email Preview */}
       <section className={`email-preview ${isPreviewOpen ? 'open' : ''}`}>
         <div className="preview-header">
+          <FaTimes className="close-icon" onClick={() => setIsPreviewOpen(false)} /> {/* Close icon to hide preview */}
           <h2>Email Preview</h2>
         </div>
         <div className="preview-options">
@@ -77,5 +76,4 @@ const EmailPage = () => {
     </div>
   );
 };
-
 export default EmailPage;
