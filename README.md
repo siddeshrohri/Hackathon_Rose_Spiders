@@ -20,7 +20,7 @@ Ensure you have Python 3.7 or higher installed on your system. You can download 
 To get a local copy of this repository, use the following command:
 
 ```bash
-git clone https://github.com/your-username/Hackathon_Rose_Spiders.git
+git clone https://github.com/siddeshrohri/Hackathon_Rose_Spiders.git
 ```
 
 ### Installing the dependencies
