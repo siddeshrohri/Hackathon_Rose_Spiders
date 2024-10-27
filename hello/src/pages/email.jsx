@@ -91,8 +91,7 @@ const EmailPage = () => {
         <ul>
           <li>
             <Link to="/dashboard">Admin Dashboard</Link>
-          </li>{" "}
-          {/* New Admin Dashboard link */}
+          </li>
           <li>Inbox</li>
           <li>Sent</li>
           <li>Drafts</li>
