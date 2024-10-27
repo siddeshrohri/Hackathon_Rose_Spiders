@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom"; // Import Link for navigation
+import { Link } from "react-router-dom";
 import "./email.css";
 import { FaBars, FaUserCircle, FaTimes } from "react-icons/fa";
 import EmailDropdown from "./emaildropdown";

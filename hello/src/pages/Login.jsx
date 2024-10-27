@@ -1,6 +1,6 @@
 // Login.jsx
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate hook
+import { useNavigate } from "react-router-dom";
 import "./Login.css";
 
 const Login = () => {
@@ -9,7 +9,7 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   useEffect(() => {
     const savedEmail = localStorage.getItem("rememberedEmail");
@@ -26,7 +26,7 @@ const Login = () => {
     const loggedInUser = localStorage.getItem("isLoggedIn");
     if (loggedInUser === "true") {
       setIsLoggedIn(true);
-      navigate("/email"); // Redirect to emails page if already logged in
+      navigate("/email");
     }
   }, [navigate]);
 
