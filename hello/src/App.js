@@ -1,16 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
-import { IconName } from "react-icons/fa";
-import Login from './pages/Login';
-import EmailPage from './pages/email';
-import EmailDropdown from './pages/emaildropdown';
-function App() {
-  return (
-//<Login/>
-<EmailPage/>
-//<EmailDropdown/>
+// App.js
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import Login from "./pages/Login";
+import EmailPage from "./pages/email";
 
+// Protected Route component to handle authentication
+const ProtectedRoute = ({ children }) => {
+  const isAuthenticated = localStorage.getItem("isLoggedIn") === "true";
+
+  if (!isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
+
+const App = () => {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route
+          path="/email"
+          element={
+            <ProtectedRoute>
+              <EmailPage />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;

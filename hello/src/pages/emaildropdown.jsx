@@ -1,66 +1,114 @@
-import React, { useState } from 'react';
-import './emaildropdown.css'; // Import your CSS file for styling
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa'; // Make sure this line is included
+import React, { useState } from "react";
+import "./emaildropdown.css";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
-const EmailDropdown = () => {
-    const [isOpen, setIsOpen] = useState(false); // State to manage dropdown visibility
-    const [isReportVisible, setIsReportVisible] = useState(false); // State for sticky note visibility
-    const [isAnalyzed, setIsAnalyzed] = useState(false); // State to track if analyze has been pressed
+const EmailDropdown = ({ email }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isReportVisible, setIsReportVisible] = useState(false);
+  const [isAnalyzed, setIsAnalyzed] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [analysisResults, setAnalysisResults] = useState(null);
 
+  const handleToggle = () => {
+    setIsOpen(!isOpen);
+    setIsReportVisible(false);
+    setIsAnalyzed(false);
+  };
 
-    const handleToggle = () => {
-        setIsOpen(!isOpen); // Toggle dropdown visibility
-        setIsReportVisible(false); // Reset report visibility when toggling the dropdown
-        setIsAnalyzed(false); // Reset analyze state when closing the dropdown
-    };
+  const handleAnalyze = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("http://localhost:5000/analyze", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          text: email.content, // Analyze full email content
+        }),
+      });
 
-    const handleAnalyze = () => {
-        // Handle analyze functionality here (e.g., API call)
-        console.log('Analyzing email content...');
-        setIsAnalyzed(true); // Set analyze state to true when Analyze is pressed
-    };
+      if (!response.ok) {
+        throw new Error("Analysis failed");
+      }
 
-    const handleReportToggle = () => {
-        setIsReportVisible(!isReportVisible); // Toggle report visibility
-    };
+      const results = await response.json();
+      setAnalysisResults(results);
+      setIsAnalyzed(true);
+    } catch (error) {
+      console.error("Error during analysis:", error);
+      alert("Failed to analyze email. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    return (
-        <div className="email-dropdown">
-            <div className="email-summary" onClick={handleToggle}>
-                <h3>Email Subject</h3>
-                {isOpen ? <FaChevronUp /> : <FaChevronDown />} {/* Up/Down arrow icons */}
-            </div>
-            {isOpen && (
-                <div className="email-content">
-                    <p>This is the full content of the email. Here you can add more details.</p>
-                    <div className='buttons'>
-                    <button className="analyze-button" onClick={handleAnalyze}>
-                        Analyze
-                    </button>
-                    {isAnalyzed && ( // Show the Report button only if Analyze has been pressed
-                            <button className="report-button" onClick={handleReportToggle}>
-                                {isReportVisible ? 'Hide Report' : 'Show Report'}
-                            </button>
-                        )}
-                    </div>
-                    {/* {isReportVisible && ( // Show report content if the report button is toggled
-                        <div className="report-content">
-                            <p>This is the report content for the email.</p>
+  const handleReportToggle = () => {
+    setIsReportVisible(!isReportVisible);
+  };
+
+  return (
+    <div className="email-dropdown">
+      <div className="email-summary" onClick={handleToggle}>
+        <h3>{email.subject}</h3>
+        {isOpen ? <FaChevronUp /> : <FaChevronDown />}
+      </div>
+      {isOpen && (
+        <div className="email-content">
+          <p>{email.content}</p>
+          <div className="buttons">
+            <button
+              className="analyze-button"
+              onClick={handleAnalyze}
+              disabled={isLoading}
+            >
+              {isLoading ? "Analyzing..." : "Analyze"}
+            </button>
+
+            {isAnalyzed && (
+              <button className="report-button" onClick={handleReportToggle}>
+                {isReportVisible ? "Hide Report" : "Show Report"}
+              </button>
+            )}
+          </div>
+          {isReportVisible && analysisResults && (
+            <div className="sticky-note">
+              <h3>Analysis Report</h3>
+              <p>
+                <strong>Toxicity Score:</strong>{" "}
+                {analysisResults.toxic_score.toFixed(3)}
+              </p>
+              <p>
+                <strong>Status:</strong> {analysisResults.reason}
+              </p>
+
+              {/* Additional categories section */}
+              {analysisResults.is_microaggression &&
+                analysisResults.categories &&
+                Object.keys(analysisResults.categories).length > 0 && (
+                  <div className="categories-section">
+                    <h4>Detected Categories:</h4>
+                    {Object.entries(analysisResults.categories).map(
+                      ([category, details]) => (
+                        <div key={category} className="category-item">
+                          <p className="category-name">{category}:</p>
+                          <p className="category-detail">
+                            Confidence: {(details.confidence * 100).toFixed(1)}%
+                          </p>
+                          <p className="category-detail">
+                            Terms: {details.matching_terms.join(", ")}
+                          </p>
                         </div>
-                        )} */}
-                    
-
-                </div>
-            )}
-         {/* Sticky Note for Analysis Report */}
-         {isReportVisible  && (
-                <div className="sticky-note">
-                    <h3>Analysis Report</h3>
-                    <p>Your analysis details will go here...</p>
-                </div>
-            )}
+                      )
+                    )}
+                  </div>
+                )}
+            </div>
+          )}
         </div>
-    );
+      )}
+    </div>
+  );
 };
 
 export default EmailDropdown;

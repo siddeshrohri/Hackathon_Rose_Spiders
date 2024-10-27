@@ -1,28 +1,71 @@
-// src/EmailPage.js
-import React, { useState } from 'react';
-import './email.css'; // Ensure correct path to CSS file
-import { FaBars, FaUserCircle, FaTimes } from 'react-icons/fa';
-import EmailDropdown from './emaildropdown'; // Import the EmailDropdown component
+import React, { useState } from "react";
+import { Link } from "react-router-dom"; // Import Link for navigation
+import "./email.css";
+import { FaBars, FaUserCircle, FaTimes } from "react-icons/fa";
+import EmailDropdown from "./emaildropdown";
 
 const EmailPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(''); // Define searchTerm and setSearchTerm here
+  const [searchTerm, setSearchTerm] = useState("");
 
   const emails = [
-    { id: 1, sender: 'alice@example.com', subject: 'Meeting Reminder', time: '10:00 AM' },
-    { id: 2, sender: 'bob@example.com', subject: 'Project Update', time: '9:45 AM' },
-    { id: 3, sender: 'charlie@example.com', subject: 'Happy Birthday!', time: 'Yesterday' },
-    { id: 4, sender: 'david@example.com', subject: 'Newsletter', time: '2 days ago' },
-    { id: 5, sender: 'eve@example.com', subject: 'Invitation', time: '1 week ago' },
+    {
+      id: 1,
+      subject: "Meeting Reminder",
+      content:
+        "Just a reminder that we have a meeting scheduled for today at 2 PM.",
+    },
+    {
+      id: 2,
+      subject: "Project Update",
+      content:
+        "The latest update on the project includes a completed review of the codebase.",
+    },
+    {
+      id: 3,
+      subject: "Happy Birthday!",
+      content:
+        "Wishing you a very happy birthday! Hope you have an amazing day!",
+    },
+    {
+      id: 4,
+      subject: "Newsletter",
+      content:
+        "Here is our latest newsletter with updates on the latest industry trends.",
+    },
+    {
+      id: 5,
+      subject: "Invitation",
+      content: "You are a very beautiful lady indeed.",
+    },
+    {
+      id: 6,
+      subject: "Feedback Required",
+      content: "Honestly, I thought we agreed on this. Are you kind of dumb?",
+    },
+    {
+      id: 7,
+      subject: "Get Your Act Together",
+      content: "This is absolute garbage. How can you even call this work?",
+    },
+    {
+      id: 8,
+      subject: "What a Joke",
+      content: "You must be completely clueless. This is pathetic!",
+    },
+    {
+      id: 9,
+      subject: "Get It Together",
+      content: "I'm sick of your incompetence. You're dragging everyone down!",
+    },
   ];
 
   return (
     <div className="email-page">
       <header className="header">
         <FaBars className="menu-icon" onClick={() => setIsMenuOpen(true)} />
-        
-        {/* Search Bar */}
+
         <input
           type="text"
           className="search-bar"
@@ -30,17 +73,26 @@ const EmailPage = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        
-        <FaUserCircle className="profile-icon" onClick={() => setIsPreviewOpen(true)} />
+
+        <FaUserCircle
+          className="profile-icon"
+          onClick={() => setIsPreviewOpen(true)}
+        />
       </header>
 
-      {/* Sidebar */}
-      <aside className={`sidebar ${isMenuOpen ? 'open' : ''}`}>
+      <aside className={`sidebar ${isMenuOpen ? "open" : ""}`}>
         <div className="sidebar-header">
           <h2>Mail</h2>
-          <FaTimes className="close-icon" onClick={() => setIsMenuOpen(false)} />
+          <FaTimes
+            className="close-icon"
+            onClick={() => setIsMenuOpen(false)}
+          />
         </div>
         <ul>
+          <li>
+            <Link to="/dashboard">Admin Dashboard</Link>
+          </li>{" "}
+          {/* New Admin Dashboard link */}
           <li>Inbox</li>
           <li>Sent</li>
           <li>Drafts</li>
@@ -49,21 +101,23 @@ const EmailPage = () => {
         </ul>
       </aside>
 
-      {/* Main Content */}
       <main className="email-list">
         <h2>Inbox</h2>
         <ul>
           {emails.map((email) => (
             <li key={email.id} className="email-item">
-              <EmailDropdown email={email} /> {/* Use EmailDropdown for each email */}
+              <EmailDropdown email={email} /> {/* Pass full email object */}
             </li>
           ))}
         </ul>
       </main>
-      {/* Email Preview */}
-      <section className={`email-preview ${isPreviewOpen ? 'open' : ''}`}>
+
+      <section className={`email-preview ${isPreviewOpen ? "open" : ""}`}>
         <div className="preview-header">
-          <FaTimes className="close-icon" onClick={() => setIsPreviewOpen(false)} /> {/* Close icon to hide preview */}
+          <FaTimes
+            className="close-icon"
+            onClick={() => setIsPreviewOpen(false)}
+          />
           <h2>Email Preview</h2>
         </div>
         <div className="preview-options">
@@ -76,4 +130,5 @@ const EmailPage = () => {
     </div>
   );
 };
+
 export default EmailPage;
