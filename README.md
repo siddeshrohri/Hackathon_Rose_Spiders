@@ -34,7 +34,7 @@ npm install
 Before running this application
 Open a new terminal and type in the following command to change branches
 ```bash
-git checkout personal/siddesh
+git checkout personal_siddesh
 ```
 Follow the steps in the README file to run the server model application
 Once the sever is up and running, run this application:
